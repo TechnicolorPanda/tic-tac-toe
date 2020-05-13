@@ -1,10 +1,11 @@
 body {
     font-family: Georgia, 'Nimbus Roman No9 L', 'Century Schoolbook L', serif;
     font-size: 20px;
-    background-image: url("tictactoe.png");
+    /*background-image: url("tictactoe.png");*/
     background-repeat: repeat;
     background-attachment: fixed;
     background-size: auto;
+    
 }
 
 h1 {
@@ -12,8 +13,18 @@ h1 {
     font-size: 72px;
     font-style: italic;
     text-shadow: 0 0 3px white, 0 0 3px whitesmoke;
-    width: 40%;
+    width: 50%;
     margin-right: auto;
     margin-left: auto;
 }
 
+.box {
+    color: white;
+}
+
+#container {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-rows: repeat(var(--grid-rows), 1fr);
+    grid-template-columns: repeat(var(--grid-cols), 1fr);
+  }

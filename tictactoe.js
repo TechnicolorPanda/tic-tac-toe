@@ -1,5 +1,6 @@
+let spaces = [];
+
 const gameBoard = (function() {
-    let spaces = [];
     const container = document.getElementById("container");
     const content = document.createElement("div");
     content.classList.add("box");
@@ -7,14 +8,15 @@ const gameBoard = (function() {
     for (i = 0; i<=2; i++) {
         var row = document.createElement("div"); 
         row.className = "row"; 
-        for (j = 1; j<=3; j++) {
+        for (j = 0; j<=2; j++) {
             const cell = document.createElement("div");
             cell.className = "gridsquare"; 
             let spaceNumber = ((i*3)+j);
-            let choice = " ";
+            cell.id = spaceNumber;
+            let choice = "I";
             cell.addEventListener("click", selectSquare);
-            console.log("returned choice = " + choice);
             cell.innerText = choice;
+            cell.style.color = "white";
             let playerChoice = {[spaceNumber]: [choice]};
             let spaceArray = Object.assign({}, playerChoice);
             spaces.push(spaceArray);
@@ -24,22 +26,31 @@ const gameBoard = (function() {
         content.appendChild(row);
     };
     console.log(spaces);
+    return spaces;
 }) ();
 
 function selectSquare(e) {
     console.log("click");
-    //const thisCell = e.target;
+    let thisCell = e.target;
+    let targetID = e.target.getAttribute("ID");
+    console.log(targetID);
     let choice = "X";
-    console.log(choice);
-    return choice;
+    thisCell.innerText = choice;
+    thisCell.style.color = "black";
+    let playerChoice = {[targetID]: [choice]};
+    let spaceArray = Object.assign({}, playerChoice);
+    spaces.splice(targetID, 1, spaceArray);
+    console.log(spaces);
+
 }
 
 const displayController = (function() {
-    
-    }) ();
+    console.log("displayController");
+}) ();
 
 const createUser = ({userName, avatar}) => ({
     userName,
     avatar
 });
 
+console.log ("user" + createUser.username);

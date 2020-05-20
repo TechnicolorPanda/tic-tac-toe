@@ -1,4 +1,5 @@
 let spaces = [];
+let turn = 0;
 
 const gameBoard = (function() {
     const container = document.getElementById("container");
@@ -14,43 +15,71 @@ const gameBoard = (function() {
             let spaceNumber = ((i*3)+j);
             cell.id = spaceNumber;
             let choice = "I";
+            let select = {"selection": choice};
             cell.addEventListener("click", selectSquare);
             cell.innerText = choice;
             cell.style.color = "white";
-            let playerChoice = {[spaceNumber]: [choice]};
-            let spaceArray = Object.assign({}, playerChoice);
-            spaces.push(spaceArray);
+            let selectChoice = Object.assign({}, select);
+            spaces.push(selectChoice);
             container.appendChild(cell).className = "grid";
             row.appendChild(cell); 
         }
         content.appendChild(row);
     };
-    console.log(spaces);
     return spaces;
 }) ();
 
 function selectSquare(e) {
-    console.log("click");
     let thisCell = e.target;
     let targetID = e.target.getAttribute("ID");
-    console.log(targetID);
-    let choice = "X";
+
+    if (spaces[targetID].selection != "I") {
+        alert ("Space already taken. Make new selection.");
+    } else {
+        if (turn%2 == 1) {
+            choice = playerX.marker;
+            turn++;
+        } else {
+            choice = playerO.marker;
+            turn++;
+        }
+    }
     thisCell.innerText = choice;
     thisCell.style.color = "black";
-    let playerChoice = {[targetID]: [choice]};
-    let spaceArray = Object.assign({}, playerChoice);
+    let select = {"selection": choice};
+    let spaceArray = Object.assign({}, select);
     spaces.splice(targetID, 1, spaceArray);
-    console.log(spaces);
+    //checkWin();
+}
 
+function checkWin() {
+    console.log ("Check win = " + spaces[0].selection + spaces[1].selection + spaces[2].selection);
+    if (spaces[0].selection = spaces[1].selection = spaces[2].selection){
+        if (spaces[0].selection == "X") {
+            alert(playerX.userName + " Wins!")
+        } else {
+            alert(playerO.userName + " Wins!")  
+        }
+    }
 }
 
 const displayController = (function() {
-    console.log("displayController");
+    console.log(spaces);
+    if (spaces[0].selection === spaces[1].selection === spaces[2].selection){
+        if (spaces[0].selection === "X") {
+            alert(playerX.userName + " Wins!")
+        } else {
+            alert(playerO.userName + " Wins!")  
+        }
+    }
 }) ();
 
-const createUser = ({userName, avatar}) => ({
-    userName,
-    avatar
-});
+const createUser = (userName, marker) => {
+    return  {userName, marker};
+};
 
-console.log ("user" + createUser.username);
+const playerX = createUser("Player X", "X");
+
+const playerO = createUser("Player O", "O");
+
+

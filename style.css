@@ -1,11 +1,7 @@
 body {
-    font-family: Georgia, 'Nimbus Roman No9 L', 'Century Schoolbook L', serif;
+    font-family: "Permanent Marker script=latin rev=1", Georgia, 'Nimbus Roman No9 L', 'Century Schoolbook L', serif;
     font-size: 90px;
-    background-image: url("tictactoe.png");
-    background-repeat: repeat;
-    background-attachment: fixed;
-    background-size: auto;
-    
+    background-color: white;   
 }
 
 img {
@@ -14,7 +10,7 @@ img {
 
 h1 {
     color:  rgb(172, 68, 61);
-    background-color: white;
+    background-color: none;
     font-size: 72px;
     font-style: italic;
     text-shadow: 0 0 5px grey, 0 0 10px rgb(172, 171, 171);
@@ -31,11 +27,11 @@ h1 {
     flex-wrap: wrap;
     position: relative;
     justify-content: space-evenly;
-    border: 2px solid black;
+    border: none;
 }
   
 .grid {
-    border: 2px solid black; 
+    border: none; 
     margin: 0px;
     padding-top: 10px;
     position: relative;
@@ -54,7 +50,9 @@ h1 {
     border: 2px solid white;
     display: flex;
     justify-content: space-evenly;
-    background-color: white;
+    background-image: url("tictactoe.png");
+    background-repeat: no-repeat;
+    background-size: cover;
     padding: 0px;
 }
 

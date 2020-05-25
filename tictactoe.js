@@ -1,15 +1,23 @@
 let spaces = [];
 let turn = 0;
+const container = document.getElementById("container");
 
 const gameBoard = (function() {
-    const container = document.getElementById("container");
     const content = document.createElement("div");
     content.classList.add("box");
     container.appendChild(content);
+
     fillBoard(container, content);
+
     const reset = document.getElementById("reset");
     reset.addEventListener("click", resetGame);
-    return spaces;
+    const computerPlay = document.getElementById("computerPlay");
+    computerPlay.addEventListener("click", addComputer);
+}) ();
+
+const displayController = (function() {
+
+
 }) ();
 
 function fillBoard(container, content) {
@@ -50,6 +58,7 @@ function selectSquare(e) {
             turn++;
         }
     }
+    console.log("turn = " + turn);
     thisCell.innerText = choice;
     thisCell.style.color = "black";
     let select = {"selection": choice};
@@ -97,29 +106,23 @@ function checkWin(spaces) {
 
 function resetGame() {
     console.log("reset");
-    for (let i=0; i<8; i++) {
-        cell.id = i;
-        let choice = "I";
-        let select = {"selection": choice};
-        cell.innerText = choice;
-        cell.style.color = "white";
-        let selectChoice = Object.assign({}, select);
-        spaces.push(selectChoice);
-    }
-    let turn = 0;
+    container.innerHTML = " ";
+    const content = document.createElement("div");
+    content.classList.add("box");
+    container.appendChild(content);
+    spaces.splice(0, spaces.length);
 
+    fillBoard(container, content);
+    
+    let turn = 0;
+    console.log("turn " + turn);
+    return turn;
 }
 
-//const displayController = (function() {
-//    console.log(spaces);
-//    if (spaces[0].selection === spaces[1].selection === spaces[2].selection){
-//        if (spaces[0].selection === "X") {
-//            alert(playerX.userName + " Wins!")
-//        } else {
-//            alert(playerO.userName + " Wins!")  
-//        }
-//    }
-//}) ();
+function addComputer() {
+    console.log("Add computer");
+}
+
 
 const createUser = (userName, marker) => {
     return  {userName, marker};

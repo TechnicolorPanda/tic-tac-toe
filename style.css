@@ -66,8 +66,8 @@ h1 {
 }
 
 .inputBtn {
-    width: 70px;
-    height: 40px;
+    width: 120px;
+    height: 60px;
     font-family: arial,sans-serif;
     font-size: 14px;
     margin-top: 20px;
@@ -75,7 +75,7 @@ h1 {
     background-color: rgb(185, 184, 184);
     display: inline-flex;
     justify-content: space-evenly;
-    padding: 0px;
+    padding: 8px;
     border-radius: 4px;
     cursor: pointer;
     user-select: none;

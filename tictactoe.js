@@ -1,26 +1,23 @@
 let spaces = [];
 let turn = 0;
-const container = document.getElementById("container");
+const board = document.getElementById("container");
 
 const gameBoard = (function() {
     const content = document.createElement("div");
     content.classList.add("box");
-    container.appendChild(content);
+    board.appendChild(content);
 
-    fillBoard(container, content);
+    fillBoard(board, content);
+}) ();
 
+const displayController = (function() {
     const reset = document.getElementById("reset");
     reset.addEventListener("click", resetGame);
     const computerPlay = document.getElementById("computerPlay");
     computerPlay.addEventListener("click", addComputer);
 }) ();
 
-const displayController = (function() {
-
-
-}) ();
-
-function fillBoard(container, content) {
+function fillBoard(board, content) {
     for (i = 0; i<=2; i++) {
         var row = document.createElement("div"); 
         row.className = "row"; 
@@ -36,7 +33,7 @@ function fillBoard(container, content) {
             cell.style.color = "white";
             let selectChoice = Object.assign({}, select);
             spaces.push(selectChoice);
-            container.appendChild(cell).className = "grid";
+            board.appendChild(cell).className = "grid";
             row.appendChild(cell); 
         }
         content.appendChild(row);
@@ -50,11 +47,19 @@ function selectSquare(e) {
     if (spaces[targetID].selection != "I") {
         alert ("Space already taken. Make new selection.");
     } else {
-        if (turn%2 == 1) {
+        if (turn%2 == 0) {
             choice = playerX.marker;
+            let labelO = document.getElementById("playerOLabel");
+            labelO.style.backgroundColor = "rgb(172, 68, 61)";
+            let labelX = document.getElementById("playerXLabel");
+            labelX.style.backgroundColor = "rgb(37, 43, 43)";
             turn++;
         } else {
             choice = playerO.marker;
+            let labelX = document.getElementById("playerXLabel");
+            labelX.style.backgroundColor = "rgb(172, 68, 61)";
+            let labelO = document.getElementById("playerOLabel");
+            labelO.style.backgroundColor = "rgb(37, 43, 43)";
             turn++;
         }
     }
@@ -65,54 +70,64 @@ function selectSquare(e) {
     let spaceArray = Object.assign({}, select);
     spaces.splice(targetID, 1, spaceArray);
     console.log(spaces);
-    checkWin(spaces);
+    setTimeout(checkWin(spaces), 1000);
 }
 
 function checkWin(spaces) {
     if (spaces[0].selection == "O" & spaces[1].selection == "O" & spaces[2].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[3].selection == "O" & spaces[4].selection == "O" & spaces[5].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();;
     } else if (spaces[6].selection == "O" & spaces[7].selection == "O" & spaces[8].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();;
     } else if (spaces[0].selection == "O" & spaces[3].selection == "O" & spaces[6].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[1].selection == "O" & spaces[4].selection == "O" & spaces[7].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[2].selection == "O" & spaces[5].selection == "O" & spaces[8].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[0].selection == "O" & spaces[4].selection == "O" & spaces[8].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[6].selection == "O" & spaces[4].selection == "O" & spaces[2].selection == "O") {
-        alert(playerO.userName + " Wins!");
+        oWins();
     } else if (spaces[0].selection == "X" & spaces[1].selection == "X" & spaces[2].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[3].selection == "X" & spaces[4].selection == "X" & spaces[5].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[6].selection == "X" & spaces[7].selection == "X" & spaces[8].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[0].selection == "X" & spaces[3].selection == "X" & spaces[6].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[1].selection == "X" & spaces[4].selection == "X" & spaces[7].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[2].selection == "X" & spaces[5].selection == "X" & spaces[8].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[0].selection == "X" & spaces[4].selection == "X" & spaces[8].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     } else if (spaces[6].selection == "X" & spaces[4].selection == "X" & spaces[2].selection == "X") {
-        alert(playerX.userName + " Wins!");
+        xWins();
     }
+}
+
+function oWins() {
+    alert(playerO.userName + " Wins!");
+    resetGame();
+}
+
+function xWins() {
+    alert(playerX.userName + " Wins!");
+    resetGame();
 }
 
 function resetGame() {
     console.log("reset");
-    container.innerHTML = " ";
+    board.innerHTML = " ";
     const content = document.createElement("div");
     content.classList.add("box");
-    container.appendChild(content);
+    board.appendChild(content);
     spaces.splice(0, spaces.length);
 
-    fillBoard(container, content);
+    fillBoard(board, content);
     
     let turn = 0;
     console.log("turn " + turn);

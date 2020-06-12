@@ -20,7 +20,8 @@ const displayController = (function() {
 function fillBoard(board, content) {
     for (i = 0; i<=2; i++) {
         var row = document.createElement("div"); 
-        row.className = "row"; 
+        row.className = "row";
+
         for (j = 0; j<=2; j++) {
             const cell = document.createElement("div");
             cell.className = "gridsquare"; 
@@ -38,9 +39,16 @@ function fillBoard(board, content) {
         }
         content.appendChild(row);
     };
+
+    let labelX = document.getElementById("playerXLabel");
+    labelX.style.backgroundColor = "rgb(172, 68, 61)";
+
 }
 
 function selectSquare(e) {
+    let playerX = createUser("Player X", "X");
+    let playerO = createUser("Player O", "O");
+
     let thisCell = e.target;
     let targetID = e.target.getAttribute("ID");
 
@@ -70,52 +78,58 @@ function selectSquare(e) {
     let spaceArray = Object.assign({}, select);
     spaces.splice(targetID, 1, spaceArray);
     console.log(spaces);
-    setTimeout(checkWin(spaces), 1000);
+    setTimeout(checkWin(spaces, playerX, playerO), 1000);
 }
 
-function checkWin(spaces) {
+function checkWin(spaces, playerX, playerO) {
     if (spaces[0].selection == "O" & spaces[1].selection == "O" & spaces[2].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[3].selection == "O" & spaces[4].selection == "O" & spaces[5].selection == "O") {
-        oWins();;
+        oWins(playerO);;
     } else if (spaces[6].selection == "O" & spaces[7].selection == "O" & spaces[8].selection == "O") {
-        oWins();;
+        oWins(playerO);;
     } else if (spaces[0].selection == "O" & spaces[3].selection == "O" & spaces[6].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[1].selection == "O" & spaces[4].selection == "O" & spaces[7].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[2].selection == "O" & spaces[5].selection == "O" & spaces[8].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[0].selection == "O" & spaces[4].selection == "O" & spaces[8].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[6].selection == "O" & spaces[4].selection == "O" & spaces[2].selection == "O") {
-        oWins();
+        oWins(playerO);
     } else if (spaces[0].selection == "X" & spaces[1].selection == "X" & spaces[2].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[3].selection == "X" & spaces[4].selection == "X" & spaces[5].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[6].selection == "X" & spaces[7].selection == "X" & spaces[8].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[0].selection == "X" & spaces[3].selection == "X" & spaces[6].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[1].selection == "X" & spaces[4].selection == "X" & spaces[7].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[2].selection == "X" & spaces[5].selection == "X" & spaces[8].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[0].selection == "X" & spaces[4].selection == "X" & spaces[8].selection == "X") {
-        xWins();
+        xWins(playerX);
     } else if (spaces[6].selection == "X" & spaces[4].selection == "X" & spaces[2].selection == "X") {
-        xWins();
+        xWins(playerX);
     }
 }
 
 function oWins() {
-    alert(playerO.userName + " Wins!");
+    let labelO = document.getElementById("playerO");
+    console.log("O " + labelO.value)
+    let playerOName = createUser(labelO.value, "O");
+    alert(playerOName.userName + " Wins!");
     resetGame();
 }
 
 function xWins() {
-    alert(playerX.userName + " Wins!");
+    let labelX = document.getElementById("playerX");
+    console.log("X " + labelX.value)
+    let playerXName = createUser(labelX.value, "X");
+    alert(playerXName.userName + " Wins!");
     resetGame();
 }
 
@@ -138,11 +152,6 @@ function addComputer() {
     console.log("Add computer");
 }
 
-
 const createUser = (userName, marker) => {
     return  {userName, marker};
 };
-
-const playerX = createUser("Player X", "X");
-
-const playerO = createUser("Player O", "O");

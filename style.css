@@ -111,6 +111,12 @@ h1 {
     border-radius: 8px;
 }
 
+.text-input {
+    background-color: light grey;
+    text-align: center;
+    font-size: medium;
+}
+
 .PlayerX {
     background-color: rgb(37, 43, 43);
 }

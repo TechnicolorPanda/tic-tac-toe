@@ -16,8 +16,12 @@ href="style.css">
   <div class = "row">
     
     <div class = "side">
-      <span class="label PlayerX" id = "playerXLabel">Player X</span>
-      <span class="label PlayerO" id = "playerOLabel">Player O</span>
+      <span class="label PlayerX" id = "playerXLabel">
+        <input type="text" class="text-input" name="username" maxlength="100" value="Player X" id="playerX" onfocus="this.value=''"><br>
+      </span>
+      <span class="label PlayerO" id = "playerOLabel">
+        <input type="text" class="text-input" name="username" maxlength="100" value="Player O" id="playerO" onfocus="this.value=''"><br>
+      </span>
       
       <button class = inputBtn id = "reset">Reset</button>
       <button class = inputBtn id = "computerPlay">Play Against the Computer</button>

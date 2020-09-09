@@ -1,12 +1,12 @@
 let spaces = [];
 let turn = 0;
+let AI = false;
 const board = document.getElementById("container");
 
 const gameBoard = (function() {
     const content = document.createElement("div");
     content.classList.add("box");
     board.appendChild(content);
-
     fillBoard(board, content);
 }) ();
 
@@ -62,23 +62,38 @@ function selectSquare(e) {
             let labelX = document.getElementById("playerXLabel");
             labelX.style.backgroundColor = "rgb(37, 43, 43)";
             turn++;
+            console.log("turn " + turn);
         } else {
-            choice = playerO.marker;
+            if (AI == false) {
+                choice = playerO.marker;
+            } else {
+                let playerO = createUser("Marvin", "O");
+                //AIFactory
+                return playerO;
+            }
             let labelX = document.getElementById("playerXLabel");
             labelX.style.backgroundColor = "rgb(172, 68, 61)";
             let labelO = document.getElementById("playerOLabel");
             labelO.style.backgroundColor = "rgb(37, 43, 43)";
             turn++;
+            console.log("turn " + turn);
         }
     }
-    console.log("turn = " + turn);
     thisCell.innerText = choice;
     thisCell.style.color = "black";
     let select = {"selection": choice};
     let spaceArray = Object.assign({}, select);
     spaces.splice(targetID, 1, spaceArray);
-    console.log(spaces);
     setTimeout(checkWin(spaces, playerX, playerO), 1000);
+    console.log(spaces);
+    render(spaces);
+    
+}
+
+//render array on each click
+
+function render(spaces) {
+    console.log("render " + spaces);
 }
 
 function checkWin(spaces, playerX, playerO) {
@@ -117,9 +132,12 @@ function checkWin(spaces, playerX, playerO) {
     }
 }
 
+const createUser = (userName, marker) => {
+    return  {userName, marker};
+};
+
 function oWins() {
     let labelO = document.getElementById("playerO");
-    console.log("O " + labelO.value)
     let playerOName = createUser(labelO.value, "O");
     alert(playerOName.userName + " Wins!");
     resetGame();
@@ -127,14 +145,13 @@ function oWins() {
 
 function xWins() {
     let labelX = document.getElementById("playerX");
-    console.log("X " + labelX.value)
     let playerXName = createUser(labelX.value, "X");
     alert(playerXName.userName + " Wins!");
     resetGame();
 }
 
 function resetGame() {
-    console.log("reset");
+    console.log("reset ");
     board.innerHTML = " ";
     const content = document.createElement("div");
     content.classList.add("box");
@@ -142,6 +159,12 @@ function resetGame() {
     spaces.splice(0, spaces.length);
 
     fillBoard(board, content);
+
+    let labelX = document.getElementById("playerXLabel");
+    labelX.style.backgroundColor = "rgb(172, 68, 61)";
+    let labelO = document.getElementById("playerOLabel");
+    labelO.style.backgroundColor = "rgb(37, 43, 43)";
+    document.getElementById("playerO").value = "Player O";
     
     let turn = 0;
     console.log("turn " + turn);
@@ -150,8 +173,13 @@ function resetGame() {
 
 function addComputer() {
     console.log("Add computer");
+    resetGame();
+    document.getElementById("playerO").value = "Marvin";
+    let AI = true;
+    return AI;
 }
 
-const createUser = (userName, marker) => {
-    return  {userName, marker};
+const AIFactory = () => {
+    //move in random cell of array marker I
+    return  {};
 };

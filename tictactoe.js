@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 const spaces = [];
-//let turn = 0;
+let turn = 0;
 const AI = false;
 
 // fill game board with placeholder
@@ -39,12 +39,10 @@ function selectSquare(e) {
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
 
-  let turn = 0;
-
-  if (spaces[targetID].selection != 'I') {
+  if (spaces[targetID].selection !== 'I') {
     const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
-  } else if (turn % 2 == 0) {
+  } else if (turn % 2 === 0) {
     choice = playerX.marker;
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(172, 68, 61)';
@@ -52,7 +50,7 @@ function selectSquare(e) {
     labelX.style.backgroundColor = 'rgb(37, 43, 43)';
     turn++;
   } else {
-    if (AI == false) {
+    if (AI === false) {
       choice = playerO.marker;
     } else {
       const playerO = createUser('Marvin', 'O');
@@ -64,7 +62,6 @@ function selectSquare(e) {
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(37, 43, 43)';
     turn++;
-    console.log(`turn ${turn}`);
   }
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
@@ -78,110 +75,126 @@ function selectSquare(e) {
 // render array on each click
 
 function render(spaces) {
-  console.log(`render ${spaces}`);
+  console.log(spaces);
 }
 
 function checkWin(spaces, playerX, playerO) {
   if (
-    (spaces[0].selection == 'O')
-    & (spaces[1].selection == 'O')
-    & (spaces[2].selection == 'O')
+    (spaces[0].selection === 'O')
+    & (spaces[1].selection === 'O')
+    & (spaces[2].selection === 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[3].selection == 'O')
-    & (spaces[4].selection == 'O')
-    & (spaces[5].selection == 'O')
+    (spaces[3].selection === 'O')
+    & (spaces[4].selection === 'O')
+    & (spaces[5].selection === 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[6].selection == 'O')
+    (spaces[6].selection === 'O')
+    & (spaces[7].selection === 'O')
+    & (spaces[8].selection === 'O')
+  ) {
+    oWins(playerO);
+  } else if (
+    (spaces[0].selection === 'O')
+    & (spaces[3].selection === 'O')
+    & (spaces[6].selection === 'O')
+  ) {
+    oWins(playerO);
+  } else if (
+    (spaces[1].selection === 'O')
+    & (spaces[4].selection === 'O')
     & (spaces[7].selection == 'O')
-    & (spaces[8].selection == 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[0].selection == 'O')
-    & (spaces[3].selection == 'O')
-    & (spaces[6].selection == 'O')
+    (spaces[2].selection === 'O')
+    & (spaces[5].selection === 'O')
+    & (spaces[8].selection === 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[1].selection == 'O')
-    & (spaces[4].selection == 'O')
-    & (spaces[7].selection == 'O')
+    (spaces[0].selection === 'O')
+    & (spaces[4].selection === 'O')
+    & (spaces[8].selection === 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[2].selection == 'O')
-    & (spaces[5].selection == 'O')
-    & (spaces[8].selection == 'O')
+    (spaces[6].selection === 'O')
+    & (spaces[4].selection === 'O')
+    & (spaces[2].selection === 'O')
   ) {
     oWins(playerO);
   } else if (
-    (spaces[0].selection == 'O')
-    & (spaces[4].selection == 'O')
-    & (spaces[8].selection == 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[6].selection == 'O')
-    & (spaces[4].selection == 'O')
-    & (spaces[2].selection == 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[0].selection == 'X')
-    & (spaces[1].selection == 'X')
-    & (spaces[2].selection == 'X')
+    (spaces[0].selection === 'X')
+    & (spaces[1].selection === 'X')
+    & (spaces[2].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[3].selection == 'X')
-    & (spaces[4].selection == 'X')
-    & (spaces[5].selection == 'X')
+    (spaces[3].selection === 'X')
+    & (spaces[4].selection === 'X')
+    & (spaces[5].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[6].selection == 'X')
-    & (spaces[7].selection == 'X')
-    & (spaces[8].selection == 'X')
+    (spaces[6].selection === 'X')
+    & (spaces[7].selection === 'X')
+    & (spaces[8].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[0].selection == 'X')
-    & (spaces[3].selection == 'X')
-    & (spaces[6].selection == 'X')
+    (spaces[0].selection === 'X')
+    & (spaces[3].selection === 'X')
+    & (spaces[6].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[1].selection == 'X')
-    & (spaces[4].selection == 'X')
-    & (spaces[7].selection == 'X')
+    (spaces[1].selection === 'X')
+    & (spaces[4].selection === 'X')
+    & (spaces[7].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[2].selection == 'X')
-    & (spaces[5].selection == 'X')
-    & (spaces[8].selection == 'X')
+    (spaces[2].selection === 'X')
+    & (spaces[5].selection === 'X')
+    & (spaces[8].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[0].selection == 'X')
-    & (spaces[4].selection == 'X')
-    & (spaces[8].selection == 'X')
+    (spaces[0].selection === 'X')
+    & (spaces[4].selection === 'X')
+    & (spaces[8].selection === 'X')
   ) {
     xWins(playerX);
   } else if (
-    (spaces[6].selection == 'X')
-    & (spaces[4].selection == 'X')
-    & (spaces[2].selection == 'X')
+    (spaces[6].selection === 'X')
+    & (spaces[4].selection === 'X')
+    & (spaces[2].selection === 'X')
   ) {
     xWins(playerX);
+  } else if (
+    checkForTie(spaces)
+  ) {
+    catsGame();
+  }
+}
+
+function checkForTie(spaces) {
+  if (spaces.some((e) => e.selection === 'I')) {
+    const tie = false;
+    return tie;
+  } else {
+    const tie = true;
+    return tie;
   }
 }
 
 const createUser = (userName, marker) => ({ userName, marker });
+
+// displays message when O wins
 
 function oWins() {
   const labelO = document.getElementById('playerO');
@@ -190,6 +203,8 @@ function oWins() {
   messageBox.innerHTML = `${playerOName.userName} Wins!`;
 }
 
+// displays message when X wins
+
 function xWins() {
   const labelX = document.getElementById('playerX');
   const playerXName = createUser(labelX.value, 'X');
@@ -197,15 +212,24 @@ function xWins() {
   messageBox.innerHTML = `${playerXName.userName} Wins!`;
 }
 
+// displays message at tie
+
+function catsGame() {
+  const messageBox = document.getElementById('message_box');
+  messageBox.innerHTML = 'Cat\'s Game';
+}
+
+// returns board to initial state upon reset
+
 function resetGame() {
+  const messageBox = document.getElementById('message_box');
+  messageBox.innerHTML = ' ';
   const board = document.getElementById('container');
   board.innerHTML = ' ';
   const content = document.createElement('div');
   content.classList.add('box');
   board.appendChild(content);
   spaces.splice(0, spaces.length);
-  const messageBox = document.getElementById('message_box');
-  messageBox.innerHTML = ' ';
 
   fillBoard(board, content);
 
@@ -214,9 +238,6 @@ function resetGame() {
   const labelO = document.getElementById('playerOLabel');
   labelO.style.backgroundColor = 'rgb(37, 43, 43)';
   document.getElementById('playerO').value = 'Player O';
-
-  const turn = 0;
-  return turn;
 }
 
 function addComputer() {

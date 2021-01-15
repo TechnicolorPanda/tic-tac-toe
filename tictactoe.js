@@ -3,6 +3,18 @@ const spaces = [];
 let turn = 0;
 const AI = false;
 
+// test to check for tie game
+
+function checkForTie(spaces) {
+  if (spaces.some((e) => e.selection === 'I')) {
+    const tie = false;
+    return tie;
+  } else {
+    const tie = true;
+    return tie;
+  }
+}
+
 // fill game board with placeholder
 
 function fillBoard(board, content) {
@@ -179,16 +191,6 @@ function checkWin(spaces, playerX, playerO) {
     checkForTie(spaces)
   ) {
     catsGame();
-  }
-}
-
-function checkForTie(spaces) {
-  if (spaces.some((e) => e.selection === 'I')) {
-    const tie = false;
-    return tie;
-  } else {
-    const tie = true;
-    return tie;
   }
 }
 

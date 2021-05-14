@@ -50,7 +50,13 @@ function selectSquare(e) {
 
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
+  console.log(targetID);
+  console.log(thisCell);
+  console.log(playerX);
+  placeMarker(targetID, thisCell, playerX);
+}
 
+function placeMarker(targetID, thisCell, playerX) {
   if (spaces[targetID].selection !== 'I') {
     const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
@@ -249,9 +255,13 @@ function addComputer() {
   return AI;
 }
 
-const AIFactory = () =>
+const AIFactory = () => {
   // move in random cell of array marker I
-  ({});
+  let targetID = (0);
+  // let thisCell = <div class = 'grid' id = targetID
+  let playerO = playerO;
+  selectSquare(targetID, thisCell, playerO);
+};
 
 // creates game board
 

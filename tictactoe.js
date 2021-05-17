@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 const spaces = [];
 let turn = 0;
-const AI = false;
+let AI = false;
 
 // test to check for tie game
 
@@ -46,49 +46,72 @@ function fillBoard(board, content) {
 
 function selectSquare(e) {
   const playerX = createUser('Player X', 'X');
-  const playerO = createUser('Player O', 'O');
+  let playerO;
+  console.log(AI);
+  
+  if (AI === false) {
+    playerO = createUser('Player O', 'O');
+  } else {
+    playerO = createUser('Marvin', 'O');
+  }
 
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
+  let player;
+  if (turn % 2 === 0) {
+    player = playerX;
+  } else {
+    player = playerO;
+  }
   console.log(targetID);
   console.log(thisCell);
-  console.log(playerX);
-  placeMarker(targetID, thisCell, playerX);
+  console.log(player);
+  placeMarker(targetID, thisCell, player);
 }
 
-function placeMarker(targetID, thisCell, playerX) {
-  if (spaces[targetID].selection !== 'I') {
+function placeMarker(targetID, thisCell, player) {
+  console.log(spaces[parseInt(targetID)].selection);
+  if (spaces[parseInt(targetID)].selection !== 'I') {
     const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
   } else if (turn % 2 === 0) {
-    choice = playerX.marker;
+    choice = player.marker;
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(172, 68, 61)';
     const labelX = document.getElementById('playerXLabel');
     labelX.style.backgroundColor = 'rgb(37, 43, 43)';
     turn++;
   } else {
-    if (AI === false) {
-      choice = playerO.marker;
-    } else {
-      const playerO = createUser('Marvin', 'O');
-      // AIFactory
-      return playerO;
-    }
+    choice = player.marker;
     const labelX = document.getElementById('playerXLabel');
     labelX.style.backgroundColor = 'rgb(172, 68, 61)';
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(37, 43, 43)';
     turn++;
   }
+
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
   const spaceArray = { ...select };
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
+  if ((turn % 2) && AI) {
+    AIFactory()
+  }
   render(spaces);
 }
+
+const AIFactory = () => {
+  console.log('add AI');
+  // move in random cell of array marker I
+  let targetID = (0);
+  let thisCell = document.createElement('div');
+  thisCell.setAttribute('class', 'grid');
+  thisCell.setAttribute('id', targetID);
+  playerO = createUser('Marvin', 'O');
+  placeMarker(targetID, thisCell, playerO);
+};
 
 // render array on each click
 
@@ -251,17 +274,9 @@ function resetGame() {
 function addComputer() {
   resetGame();
   document.getElementById('playerO').value = 'Marvin';
-  const AI = true;
+  AI = true;
   return AI;
 }
-
-const AIFactory = () => {
-  // move in random cell of array marker I
-  let targetID = (0);
-  // let thisCell = <div class = 'grid' id = targetID
-  let playerO = playerO;
-  selectSquare(targetID, thisCell, playerO);
-};
 
 // creates game board
 

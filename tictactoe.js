@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 const spaces = [];
-let turn = 0;
+let turn = true;
 let AI = false;
 
 // test to check for tie game
@@ -58,7 +58,7 @@ function selectSquare(e) {
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
   let player;
-  if (turn % 2 === 0) {
+  if (turn === true) {
     player = playerX;
   } else {
     player = playerO;
@@ -74,50 +74,52 @@ function placeMarker(targetID, thisCell, player) {
   if (spaces[parseInt(targetID)].selection !== 'I') {
     const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
-  } else if (turn % 2 === 0) {
+  } else if (turn === true) {
+    console.log('player x');
     choice = player.marker;
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(172, 68, 61)';
     const labelX = document.getElementById('playerXLabel');
     labelX.style.backgroundColor = 'rgb(37, 43, 43)';
-    turn++;
+    turn = false;
   } else {
+    console.log('player 0');
     choice = player.marker;
     const labelX = document.getElementById('playerXLabel');
     labelX.style.backgroundColor = 'rgb(172, 68, 61)';
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(37, 43, 43)';
-    turn++;
+    turn = true;
   }
-
+  console.log(choice);
+  console.log(thisCell);
+  console.log('turn ' + turn);
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
   const spaceArray = { ...select };
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
-  if ((turn % 2) && AI) {
+  if ((turn === false) && AI) {
     AIFactory()
   }
-  render(spaces);
 }
 
 const AIFactory = () => {
   console.log('add AI');
   // move in random cell of array marker I
-  let targetID = (0);
-  let thisCell = document.createElement('div');
-  thisCell.setAttribute('class', 'grid');
-  thisCell.setAttribute('id', targetID);
+  let targetID = Math.floor(Math.random() * 9);
+  console.log(targetID);
+  let thisCell = document.getElementById(targetID);
+  console.log(thisCell);
   playerO = createUser('Marvin', 'O');
-  placeMarker(targetID, thisCell, playerO);
+  if (thisCell === 'I') {
+  // turn = true;
+    placeMarker(targetID, thisCell, playerO);
+  } else {
+    AIFactory();
+  }
 };
-
-// render array on each click
-
-function render(spaces) {
-  console.log(spaces);
-}
 
 function checkWin(spaces, playerX, playerO) {
   if (

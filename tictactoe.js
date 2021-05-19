@@ -39,15 +39,18 @@ function fillBoard(board, content) {
     }
     content.appendChild(row);
   }
+}
 
-  const labelX = document.getElementById('playerXLabel');
-  labelX.style.backgroundColor = 'rgb(172, 68, 61)';
+function endGame() {
+  for (let i = 0; i < 9; i++) {
+    const cell = document.getElementById(i);
+    cell.removeEventListener('click', selectSquare);
+  }
 }
 
 function selectSquare(e) {
   const playerX = createUser('Player X', 'X');
   let playerO;
-  console.log(AI);
   
   if (AI === false) {
     playerO = createUser('Player O', 'O');
@@ -63,19 +66,14 @@ function selectSquare(e) {
   } else {
     player = playerO;
   }
-  console.log(targetID);
-  console.log(thisCell);
-  console.log(player);
   placeMarker(targetID, thisCell, player);
 }
 
 function placeMarker(targetID, thisCell, player) {
-  console.log(spaces[parseInt(targetID)].selection);
   if (spaces[parseInt(targetID)].selection !== 'I') {
     const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
   } else if (turn === true) {
-    console.log('player x');
     choice = player.marker;
     const labelO = document.getElementById('playerOLabel');
     labelO.style.backgroundColor = 'rgb(172, 68, 61)';
@@ -83,7 +81,6 @@ function placeMarker(targetID, thisCell, player) {
     labelX.style.backgroundColor = 'rgb(37, 43, 43)';
     turn = false;
   } else {
-    console.log('player 0');
     choice = player.marker;
     const labelX = document.getElementById('playerXLabel');
     labelX.style.backgroundColor = 'rgb(172, 68, 61)';
@@ -91,9 +88,6 @@ function placeMarker(targetID, thisCell, player) {
     labelO.style.backgroundColor = 'rgb(37, 43, 43)';
     turn = true;
   }
-  console.log(choice);
-  console.log(thisCell);
-  console.log('turn ' + turn);
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
@@ -106,19 +100,10 @@ function placeMarker(targetID, thisCell, player) {
 }
 
 const AIFactory = () => {
-  console.log('add AI');
-  // move in random cell of array marker I
   let targetID = Math.floor(Math.random() * 9);
-  console.log(targetID);
   let thisCell = document.getElementById(targetID);
-  console.log(thisCell);
-  playerO = createUser('Marvin', 'O');
-  if (thisCell === 'I') {
-  // turn = true;
-    placeMarker(targetID, thisCell, playerO);
-  } else {
-    AIFactory();
-  }
+  player = createUser('Marvin', 'O');
+  placeMarker(targetID, thisCell, player);
 };
 
 function checkWin(spaces, playerX, playerO) {
@@ -234,6 +219,7 @@ function oWins() {
   const playerOName = createUser(labelO.value, 'O');
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = `${playerOName.userName} Wins!`;
+  endGame();
 }
 
 // displays message when X wins
@@ -243,6 +229,7 @@ function xWins() {
   const playerXName = createUser(labelX.value, 'X');
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = `${playerXName.userName} Wins!`;
+  endGame();
 }
 
 // displays message at tie
@@ -250,6 +237,7 @@ function xWins() {
 function catsGame() {
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = 'Cat\'s Game';
+  endGame();
 }
 
 // returns board to initial state upon reset

@@ -50,13 +50,7 @@ function endGame() {
 
 function selectSquare(e) {
   const playerX = createUser('Player X', 'X');
-  let playerO;
-  
-  if (AI === false) {
-    playerO = createUser('Player O', 'O');
-  } else {
-    playerO = createUser('Marvin', 'O');
-  }
+  const playerO = createUser('Player O', 'O');
 
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
@@ -66,26 +60,39 @@ function selectSquare(e) {
   } else {
     player = playerO;
   }
+  console.log('player ' + player.userName);
   placeMarker(targetID, thisCell, player);
 }
 
+// changes colors of player labels based on who's turn it is
+
+function playerXTurn() {
+  const labelX = document.getElementById('playerXLabel');
+  labelX.style.backgroundColor = 'rgb(172, 68, 61)';
+  const labelO = document.getElementById('playerOLabel');
+  labelO.style.backgroundColor = 'rgb(37, 43, 43)';
+}
+
+function playerOTurn() {
+  const labelX = document.getElementById('playerXLabel');
+  labelX.style.backgroundColor = 'rgb(37, 43, 43)';
+  const labelO = document.getElementById('playerOLabel');
+  labelO.style.backgroundColor = 'rgb(172, 68, 61)';
+}
+
 function placeMarker(targetID, thisCell, player) {
+  const messageBox = document.getElementById('message_box');
+  messageBox.innerHTML = '';
+
   if (spaces[parseInt(targetID)].selection !== 'I') {
-    const messageBox = document.getElementById('message_box');
     messageBox.innerHTML = 'Space already taken. Make new selection.';
   } else if (turn === true) {
     choice = player.marker;
-    const labelO = document.getElementById('playerOLabel');
-    labelO.style.backgroundColor = 'rgb(172, 68, 61)';
-    const labelX = document.getElementById('playerXLabel');
-    labelX.style.backgroundColor = 'rgb(37, 43, 43)';
+    playerOTurn();
     turn = false;
   } else {
     choice = player.marker;
-    const labelX = document.getElementById('playerXLabel');
-    labelX.style.backgroundColor = 'rgb(172, 68, 61)';
-    const labelO = document.getElementById('playerOLabel');
-    labelO.style.backgroundColor = 'rgb(37, 43, 43)';
+    playerXTurn();
     turn = true;
   }
   thisCell.innerText = choice;
@@ -95,11 +102,12 @@ function placeMarker(targetID, thisCell, player) {
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
   if ((turn === false) && AI) {
-    AIFactory()
+    AIFactory();
   }
 }
 
 const AIFactory = () => {
+  console.log('AI factory');
   let targetID = Math.floor(Math.random() * 9);
   let thisCell = document.getElementById(targetID);
   player = createUser('Marvin', 'O');
@@ -253,12 +261,9 @@ function resetGame() {
   spaces.splice(0, spaces.length);
 
   fillBoard(board, content);
+  playerXTurn();
 
-  const labelX = document.getElementById('playerXLabel');
-  labelX.style.backgroundColor = 'rgb(172, 68, 61)';
   document.getElementById('playerX').value = 'Player X';
-  const labelO = document.getElementById('playerOLabel');
-  labelO.style.backgroundColor = 'rgb(37, 43, 43)';
   document.getElementById('playerO').value = 'Player O';
   turn = true;
   AI = false;
@@ -284,11 +289,7 @@ const gameBoard = (function createBoard() {
 // creates buttons to reset or add AI player
 
 const displayController = (function computerPlayer() {
-  const labelX = document.getElementById('playerXLabel');
-  labelX.style.backgroundColor = 'rgb(172, 68, 61)';
-  const labelO = document.getElementById('playerOLabel');
-  labelO.style.backgroundColor = 'rgb(37, 43, 43)';
-
+  playerXTurn();
   const reset = document.getElementById('reset');
   reset.addEventListener('click', resetGame);
   const computerPlay = document.getElementById('computerPlay');

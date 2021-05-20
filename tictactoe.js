@@ -259,6 +259,8 @@ function resetGame() {
   const labelO = document.getElementById('playerOLabel');
   labelO.style.backgroundColor = 'rgb(37, 43, 43)';
   document.getElementById('playerO').value = 'Player O';
+  turn = true;
+  AI = false;
 }
 
 function addComputer() {

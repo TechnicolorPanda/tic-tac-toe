@@ -256,6 +256,7 @@ function resetGame() {
 
   const labelX = document.getElementById('playerXLabel');
   labelX.style.backgroundColor = 'rgb(172, 68, 61)';
+  document.getElementById('playerX').value = 'Player X';
   const labelO = document.getElementById('playerOLabel');
   labelO.style.backgroundColor = 'rgb(37, 43, 43)';
   document.getElementById('playerO').value = 'Player O';
@@ -287,7 +288,7 @@ const displayController = (function computerPlayer() {
   labelX.style.backgroundColor = 'rgb(172, 68, 61)';
   const labelO = document.getElementById('playerOLabel');
   labelO.style.backgroundColor = 'rgb(37, 43, 43)';
-  
+
   const reset = document.getElementById('reset');
   reset.addEventListener('click', resetGame);
   const computerPlay = document.getElementById('computerPlay');

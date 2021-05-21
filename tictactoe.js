@@ -99,6 +99,8 @@ function placeMarker(targetID, thisCell, player) {
   thisCell.style.color = 'black';
   const select = { selection: choice };
   const spaceArray = { ...select };
+  console.log(targetID);
+  console.log(spaceArray);
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
   if ((turn === false) && AI) {
@@ -106,9 +108,48 @@ function placeMarker(targetID, thisCell, player) {
   }
 }
 
+function checkValidity(targetID) {
+  if (spaces[targetID].selection === 'I') {
+    return targetID;
+  } else {
+    AIFactory();
+  }
+}
+
+function selectCorner() {
+  const cornerSelection = Math.floor(Math.random() * 4);
+  switch (cornerSelection) {
+    case 0:
+      targetID = 0;
+      break;
+    case 1:
+      targetID = 2;
+      break;
+    case 2:
+      targetID = 6;
+      break;
+    case 3:
+      targetID = 8;
+      break;        
+  }
+  return checkValidity(targetID);
+}
+
 const AIFactory = () => {
-  console.log('AI factory');
-  let targetID = Math.floor(Math.random() * 9);
+  let targetID;
+  if (spaces[4].selection === 'I') {
+    targetID = 4;
+  } else if (
+    spaces[0].selection === 'I' || 
+    spaces[2].selection === 'I' ||
+    spaces[6].selection === 'I'||
+    spaces[8].selection === 'I') {
+    targetID = selectCorner();
+  } else {
+    let sideSelection = Math.floor(Math.random() * 9);
+    targetID = checkValidity(sideSelection);
+  }
+
   let thisCell = document.getElementById(targetID);
   player = createUser('Marvin', 'O');
   placeMarker(targetID, thisCell, player);

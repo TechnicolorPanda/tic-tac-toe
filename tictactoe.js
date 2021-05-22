@@ -109,11 +109,24 @@ function placeMarker(targetID, thisCell, player) {
 }
 
 function checkValidity(targetID) {
-  if (spaces[targetID].selection === 'I') {
-    return targetID;
-  } else {
-    AIFactory();
+  console.log(spaces[targetID].selection === 'I');
+  for (let i = 0; i < 9; i++) {
+    if (spaces[i].selection === 'I') {
+      if (spaces[targetID].selection === 'I') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+
+      // TODO: when all spaces are selected, prevent infinite loop
+      return true;
+    }
   }
+}
+
+function selectWinningSpace() {
+
 }
 
 function selectCorner() {
@@ -132,7 +145,7 @@ function selectCorner() {
       targetID = 8;
       break;        
   }
-  return checkValidity(targetID);
+  return targetID;
 }
 
 const AIFactory = () => {
@@ -146,117 +159,153 @@ const AIFactory = () => {
     spaces[8].selection === 'I') {
     targetID = selectCorner();
   } else {
-    let sideSelection = Math.floor(Math.random() * 9);
-    targetID = checkValidity(sideSelection);
+    targetID = Math.floor(Math.random() * 9);
   }
+  if (checkValidity(targetID)) {
+    let thisCell = document.getElementById(targetID);
+    player = createUser('Marvin', 'O');
+    placeMarker(targetID, thisCell, player);
+  } else {
+    AIFactory();
+  }
+};
 
-  let thisCell = document.getElementById(targetID);
-  player = createUser('Marvin', 'O');
-  placeMarker(targetID, thisCell, player);
+function checkOWins(spaces) {
+  if (
+    ((spaces[0].selection === 'O') & (spaces[1].selection === 'O') & (spaces[2].selection === 'O')) ||
+    ((spaces[3].selection === 'O') & (spaces[4].selection === 'O') & (spaces[5].selection === 'O')) ||
+    ((spaces[6].selection === 'O') & (spaces[7].selection === 'O') & (spaces[8].selection === 'O')) ||
+    ((spaces[0].selection === 'O') & (spaces[3].selection === 'O') & (spaces[6].selection === 'O')) ||
+    ((spaces[1].selection === 'O') & (spaces[4].selection === 'O') & (spaces[7].selection === 'O')) ||
+    ((spaces[2].selection === 'O') & (spaces[5].selection === 'O') & (spaces[8].selection === 'O')) ||
+    ((spaces[0].selection === 'O') & (spaces[4].selection === 'O') & (spaces[8].selection === 'O')) ||
+    ((spaces[6].selection === 'O') & (spaces[4].selection === 'O') & (spaces[2].selection === 'O'))
+  ) {
+    return true;
+    };
+};
+
+function checkXWins(spaces) {
+  if (
+    ((spaces[0].selection === 'X') & (spaces[1].selection === 'X') & (spaces[2].selection === 'X')) ||
+    ((spaces[3].selection === 'X') & (spaces[4].selection === 'X') & (spaces[5].selection === 'X')) ||
+    ((spaces[6].selection === 'X') & (spaces[7].selection === 'X') & (spaces[8].selection === 'X')) ||
+    ((spaces[0].selection === 'X') & (spaces[3].selection === 'X') & (spaces[6].selection === 'X')) ||
+    ((spaces[1].selection === 'X') & (spaces[4].selection === 'X') & (spaces[7].selection === 'X')) ||
+    ((spaces[2].selection === 'X') & (spaces[5].selection === 'X') & (spaces[8].selection === 'X')) ||
+    ((spaces[0].selection === 'X') & (spaces[4].selection === 'X') & (spaces[8].selection === 'X')) ||
+    ((spaces[6].selection === 'X') & (spaces[4].selection === 'X') & (spaces[2].selection === 'X'))
+  ) {
+    return true;
+    };
 };
 
 function checkWin(spaces, playerX, playerO) {
-  if (
-    (spaces[0].selection === 'O')
-    & (spaces[1].selection === 'O')
-    & (spaces[2].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[3].selection === 'O')
-    & (spaces[4].selection === 'O')
-    & (spaces[5].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[6].selection === 'O')
-    & (spaces[7].selection === 'O')
-    & (spaces[8].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[0].selection === 'O')
-    & (spaces[3].selection === 'O')
-    & (spaces[6].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[1].selection === 'O')
-    & (spaces[4].selection === 'O')
-    & (spaces[7].selection == 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[2].selection === 'O')
-    & (spaces[5].selection === 'O')
-    & (spaces[8].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[0].selection === 'O')
-    & (spaces[4].selection === 'O')
-    & (spaces[8].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[6].selection === 'O')
-    & (spaces[4].selection === 'O')
-    & (spaces[2].selection === 'O')
-  ) {
-    oWins(playerO);
-  } else if (
-    (spaces[0].selection === 'X')
-    & (spaces[1].selection === 'X')
-    & (spaces[2].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[3].selection === 'X')
-    & (spaces[4].selection === 'X')
-    & (spaces[5].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[6].selection === 'X')
-    & (spaces[7].selection === 'X')
-    & (spaces[8].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[0].selection === 'X')
-    & (spaces[3].selection === 'X')
-    & (spaces[6].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[1].selection === 'X')
-    & (spaces[4].selection === 'X')
-    & (spaces[7].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[2].selection === 'X')
-    & (spaces[5].selection === 'X')
-    & (spaces[8].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[0].selection === 'X')
-    & (spaces[4].selection === 'X')
-    & (spaces[8].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    (spaces[6].selection === 'X')
-    & (spaces[4].selection === 'X')
-    & (spaces[2].selection === 'X')
-  ) {
-    xWins(playerX);
-  } else if (
-    checkForTie(spaces)
-  ) {
-    catsGame();
-  }
+  if (checkOWins(spaces, playerO)) {oWins(playerO)};
+  if (checkXWins(spaces, playerX)) {xWins(playerX)};
+  if (checkForTie(spaces)) {catsGame()};
+
+  // if (
+  //   (spaces[0].selection === 'O')
+  //   & (spaces[1].selection === 'O')
+  //   & (spaces[2].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[3].selection === 'O')
+  //   & (spaces[4].selection === 'O')
+  //   & (spaces[5].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[6].selection === 'O')
+  //   & (spaces[7].selection === 'O')
+  //   & (spaces[8].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[0].selection === 'O')
+  //   & (spaces[3].selection === 'O')
+  //   & (spaces[6].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[1].selection === 'O')
+  //   & (spaces[4].selection === 'O')
+  //   & (spaces[7].selection == 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[2].selection === 'O')
+  //   & (spaces[5].selection === 'O')
+  //   & (spaces[8].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[0].selection === 'O')
+  //   & (spaces[4].selection === 'O')
+  //   & (spaces[8].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[6].selection === 'O')
+  //   & (spaces[4].selection === 'O')
+  //   & (spaces[2].selection === 'O')
+  // ) {
+  //   oWins(playerO);
+  // } else if (
+  //   (spaces[0].selection === 'X')
+  //   & (spaces[1].selection === 'X')
+  //   & (spaces[2].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[3].selection === 'X')
+  //   & (spaces[4].selection === 'X')
+  //   & (spaces[5].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[6].selection === 'X')
+  //   & (spaces[7].selection === 'X')
+  //   & (spaces[8].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[0].selection === 'X')
+  //   & (spaces[3].selection === 'X')
+  //   & (spaces[6].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[1].selection === 'X')
+  //   & (spaces[4].selection === 'X')
+  //   & (spaces[7].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[2].selection === 'X')
+  //   & (spaces[5].selection === 'X')
+  //   & (spaces[8].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[0].selection === 'X')
+  //   & (spaces[4].selection === 'X')
+  //   & (spaces[8].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   (spaces[6].selection === 'X')
+  //   & (spaces[4].selection === 'X')
+  //   & (spaces[2].selection === 'X')
+  // ) {
+  //   xWins(playerX);
+  // } else if (
+  //   checkForTie(spaces)
+  // ) {
+  //   catsGame();
+  // }
 }
 
 const createUser = (userName, marker) => ({ userName, marker });

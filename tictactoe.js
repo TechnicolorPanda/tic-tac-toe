@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 const spaces = [];
-let turn = true;
+let turn = 0;
 let AI = false;
 
 // test to check for tie game
@@ -55,7 +55,7 @@ function selectSquare(e) {
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
   let player;
-  if (turn === true) {
+  if (turn % 2) {
     player = playerX;
   } else {
     player = playerO;
@@ -86,14 +86,17 @@ function placeMarker(targetID, thisCell, player) {
 
   if (spaces[parseInt(targetID)].selection !== 'I') {
     messageBox.innerHTML = 'Space already taken. Make new selection.';
-  } else if (turn === true) {
+  } else if (turn % 1) {
     choice = player.marker;
     playerOTurn();
-    turn = false;
+    turn++;
+    console.log('turn = ' + turn);
   } else {
     choice = player.marker;
     playerXTurn();
-    turn = true;
+    turn++;
+    console.log('turn = ' + turn);
+    console.log(turn%2);
   }
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
@@ -101,9 +104,11 @@ function placeMarker(targetID, thisCell, player) {
   const spaceArray = { ...select };
   console.log(targetID);
   console.log(spaceArray);
+  console.log('turn = ' + turn);
+  console.log(turn%2);
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
-  if ((turn === false) && AI) {
+  if ((turn%2 === 0) && AI) {
     AIFactory();
   }
 }
@@ -126,7 +131,47 @@ function checkValidity(targetID) {
 }
 
 function selectWinningSpace() {
+  for (let i = 0; i < 9; i++) {
+    const select = { selection: 'O' };
+    const spaceArray = { ...select };
+    let newSpaces = spaces;
+    newSpaces.splice(i, 1, spaceArray);
+    if (checkOWins(newSpaces)) {
+      console.log(i);
+      return i;
+    } else {
+      console.log('no option to win');
+      return false;
+    }
+  }
+}
 
+function selectLosingSpace() {
+  for (let i = 0; i < 9; i++) {
+    const select = { selection: 'X' };
+    const spaceArray = { ...select };
+    let newSpaces = spaces;
+    newSpaces.splice(i, 1, spaceArray);
+    if (checkXWins(newSpaces)) {
+      console.log(i);
+      return i;
+    } else {
+      console.log('no option to lose');
+      return false;
+    }
+  }
+}
+
+function firstAIMove() {
+  if (spaces[4].selection === 'I') {
+    return 4;
+  } else if (
+    spaces[0].selection === 'I' || 
+    spaces[2].selection === 'I' ||
+    spaces[6].selection === 'I'||
+    spaces[8].selection === 'I') {
+    return selectCorner();
+  }
 }
 
 function selectCorner() {
@@ -150,17 +195,26 @@ function selectCorner() {
 
 const AIFactory = () => {
   let targetID;
-  if (spaces[4].selection === 'I') {
-    targetID = 4;
-  } else if (
-    spaces[0].selection === 'I' || 
-    spaces[2].selection === 'I' ||
-    spaces[6].selection === 'I'||
-    spaces[8].selection === 'I') {
-    targetID = selectCorner();
+  if (turn === 2) {
+    let firstMove = firstAIMove();
+    targetID = firstMove;
   } else {
-    targetID = Math.floor(Math.random() * 9);
+    if (
+      selectWinningSpace() !== false
+      ) {
+      console.log('select winning space ' + selectWinningSpace());
+      targetID = selectWinningSpace();
+    } else if (
+      selectLosingSpace() !== false
+    ) {
+      console.log('select losing space ' + selectLosingSpace());
+      targetID = selectLosingSpace();
+    } else {
+      console.log('random choice');
+      targetID = Math.floor(Math.random() * 9);
+    }
   }
+
   if (checkValidity(targetID)) {
     let thisCell = document.getElementById(targetID);
     player = createUser('Marvin', 'O');
@@ -204,108 +258,6 @@ function checkWin(spaces, playerX, playerO) {
   if (checkOWins(spaces, playerO)) {oWins(playerO)};
   if (checkXWins(spaces, playerX)) {xWins(playerX)};
   if (checkForTie(spaces)) {catsGame()};
-
-  // if (
-  //   (spaces[0].selection === 'O')
-  //   & (spaces[1].selection === 'O')
-  //   & (spaces[2].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[3].selection === 'O')
-  //   & (spaces[4].selection === 'O')
-  //   & (spaces[5].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[6].selection === 'O')
-  //   & (spaces[7].selection === 'O')
-  //   & (spaces[8].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[0].selection === 'O')
-  //   & (spaces[3].selection === 'O')
-  //   & (spaces[6].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[1].selection === 'O')
-  //   & (spaces[4].selection === 'O')
-  //   & (spaces[7].selection == 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[2].selection === 'O')
-  //   & (spaces[5].selection === 'O')
-  //   & (spaces[8].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[0].selection === 'O')
-  //   & (spaces[4].selection === 'O')
-  //   & (spaces[8].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[6].selection === 'O')
-  //   & (spaces[4].selection === 'O')
-  //   & (spaces[2].selection === 'O')
-  // ) {
-  //   oWins(playerO);
-  // } else if (
-  //   (spaces[0].selection === 'X')
-  //   & (spaces[1].selection === 'X')
-  //   & (spaces[2].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[3].selection === 'X')
-  //   & (spaces[4].selection === 'X')
-  //   & (spaces[5].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[6].selection === 'X')
-  //   & (spaces[7].selection === 'X')
-  //   & (spaces[8].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[0].selection === 'X')
-  //   & (spaces[3].selection === 'X')
-  //   & (spaces[6].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[1].selection === 'X')
-  //   & (spaces[4].selection === 'X')
-  //   & (spaces[7].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[2].selection === 'X')
-  //   & (spaces[5].selection === 'X')
-  //   & (spaces[8].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[0].selection === 'X')
-  //   & (spaces[4].selection === 'X')
-  //   & (spaces[8].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   (spaces[6].selection === 'X')
-  //   & (spaces[4].selection === 'X')
-  //   & (spaces[2].selection === 'X')
-  // ) {
-  //   xWins(playerX);
-  // } else if (
-  //   checkForTie(spaces)
-  // ) {
-  //   catsGame();
-  // }
 }
 
 const createUser = (userName, marker) => ({ userName, marker });
@@ -355,7 +307,7 @@ function resetGame() {
 
   document.getElementById('playerX').value = 'Player X';
   document.getElementById('playerO').value = 'Player O';
-  turn = true;
+  turn++;
   AI = false;
 }
 

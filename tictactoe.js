@@ -60,7 +60,6 @@ function selectSquare(e) {
   } else {
     player = playerO;
   }
-  console.log('player ' + player.userName);
   placeMarker(targetID, thisCell, player);
 }
 
@@ -83,9 +82,6 @@ function playerOTurn() {
 function placeMarker(targetID, thisCell, player) {
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = '';
-  console.log(turn%2);
-  console.log(spaces[parseInt(targetID)].selection);
-  console.log(targetID);
 
   if (spaces[parseInt(targetID)].selection !== 'I') {
     messageBox.innerHTML = 'Space already taken. Make new selection.';
@@ -94,23 +90,15 @@ function placeMarker(targetID, thisCell, player) {
     choice = player.marker;
     playerXTurn();
     turn++;
-    console.log('turn = ' + turn);
   } else {
     choice = player.marker;
-    console.log(choice);
     playerOTurn();
     turn++;
-    console.log('turn = ' + turn);
-    console.log(turn%2);
   }
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
   const spaceArray = { ...select };
-  console.log(targetID);
-  console.log(spaceArray);
-  console.log('turn = ' + turn);
-  console.log(turn%2);
   spaces.splice(targetID, 1, spaceArray);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
   if ((turn%2 === 0) && AI) {
@@ -119,9 +107,6 @@ function placeMarker(targetID, thisCell, player) {
 }
 
 function checkValidity(targetID) {
-  console.log(spaces[targetID].selection);
-  console.log(targetID);
-  console.log(spaces);
   for (let i = 0; i < 9; i++) {
     if (spaces[i].selection === 'I') {
       if (spaces[targetID].selection === 'I') {
@@ -137,49 +122,32 @@ function checkValidity(targetID) {
   }
 }
 
-function selectWinningSpace() {
+function selectWinningSpace(newSpaces) {
   for (let i = 0; i < 9; i++) {
-    let newSpaces = [];
+    let tempSpaces = [];
     const select = { selection: 'O' };
-    const spaceArray = { ...select };
-    newSpaces = spaces;
-    newSpaces.splice(i, 1, spaceArray);
-    if (checkOWins(newSpaces)) {
-      console.log(i);
+    let ref = newSpaces;
+    tempSpaces = ref.slice();
+    tempSpaces.splice(i, 1, select);
+    if (checkOWins(tempSpaces)) {
       return i;
     }
   }
-  console.log('no winning space');
   return false;
 }
 
-function selectLosingSpace() {
+function selectLosingSpace(newSpaces) {
   for (let i = 0; i < 9; i++) {
-    let newSpaces = [];
+    let tempSpaces = [];
     const select = { selection: 'X' };
-    const spaceArray = { ...select };
-    newSpaces = spaces;
-    newSpaces.splice(i, 1, spaceArray);
-    console.log(newSpaces);
-    if (checkXWins(newSpaces)) {
-      console.log(i);
+    let ref = newSpaces;
+    tempSpaces = ref.slice();
+    tempSpaces.splice(i, 1, select);
+    if (checkXWins(tempSpaces)) {
       return i;
-    } 
+    }
   }
-  console.log('no losing space');
   return false;
-}
-
-function firstAIMove() {
-  if (spaces[4].selection === 'I') {
-    return 4;
-  } else if (
-    spaces[0].selection === 'I' || 
-    spaces[2].selection === 'I' ||
-    spaces[6].selection === 'I'||
-    spaces[8].selection === 'I') {
-    return selectCorner();
-  }
 }
 
 function selectCorner() {
@@ -201,24 +169,37 @@ function selectCorner() {
   return targetID;
 }
 
+function firstAIMove() {
+  if (spaces[4].selection === 'I') {
+    return 4;
+  } else if (
+    spaces[0].selection === 'I' || 
+    spaces[2].selection === 'I' ||
+    spaces[6].selection === 'I'||
+    spaces[8].selection === 'I') {
+    return selectCorner();
+  }
+}
+
 const AIFactory = () => {
   let targetID;
+  const newSpaces = spaces;
+  const selectWin = selectWinningSpace(newSpaces);
+  const blockLose = selectLosingSpace(newSpaces);
+
   if (turn === 2) {
     let firstMove = firstAIMove();
     targetID = firstMove;
   } else {
     if (
-      selectWinningSpace() !== false
+      selectWin !== false
       ) {
-      console.log('select winning space ' + selectWinningSpace());
-      targetID = selectWinningSpace();
+      targetID = selectWin;
     } else if (
-      selectLosingSpace() !== false
+      blockLose !== false
     ) {
-      console.log('select losing space ' + selectLosingSpace());
-      targetID = selectLosingSpace();
+      targetID = blockLose;
     } else {
-      console.log('random choice');
       targetID = Math.floor(Math.random() * 9);
     }
   }

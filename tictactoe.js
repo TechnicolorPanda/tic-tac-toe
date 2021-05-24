@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 const spaces = [];
-let turn = 0;
+let turn = 1;
 let AI = false;
 
 // test to check for tie game
@@ -55,7 +55,7 @@ function selectSquare(e) {
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
   let player;
-  if (turn % 2) {
+  if (turn % 2 === 1) {
     player = playerX;
   } else {
     player = playerO;
@@ -83,17 +83,22 @@ function playerOTurn() {
 function placeMarker(targetID, thisCell, player) {
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = '';
+  console.log(turn%2);
+  console.log(spaces[parseInt(targetID)].selection);
+  console.log(targetID);
 
   if (spaces[parseInt(targetID)].selection !== 'I') {
     messageBox.innerHTML = 'Space already taken. Make new selection.';
-  } else if (turn % 1) {
+
+  } else if (turn%2 === 0) {
     choice = player.marker;
-    playerOTurn();
+    playerXTurn();
     turn++;
     console.log('turn = ' + turn);
   } else {
     choice = player.marker;
-    playerXTurn();
+    console.log(choice);
+    playerOTurn();
     turn++;
     console.log('turn = ' + turn);
     console.log(turn%2);
@@ -114,7 +119,9 @@ function placeMarker(targetID, thisCell, player) {
 }
 
 function checkValidity(targetID) {
-  console.log(spaces[targetID].selection === 'I');
+  console.log(spaces[targetID].selection);
+  console.log(targetID);
+  console.log(spaces);
   for (let i = 0; i < 9; i++) {
     if (spaces[i].selection === 'I') {
       if (spaces[targetID].selection === 'I') {
@@ -132,34 +139,35 @@ function checkValidity(targetID) {
 
 function selectWinningSpace() {
   for (let i = 0; i < 9; i++) {
+    let newSpaces = [];
     const select = { selection: 'O' };
     const spaceArray = { ...select };
-    let newSpaces = spaces;
+    newSpaces = spaces;
     newSpaces.splice(i, 1, spaceArray);
     if (checkOWins(newSpaces)) {
       console.log(i);
       return i;
-    } else {
-      console.log('no option to win');
-      return false;
     }
   }
+  console.log('no winning space');
+  return false;
 }
 
 function selectLosingSpace() {
   for (let i = 0; i < 9; i++) {
+    let newSpaces = [];
     const select = { selection: 'X' };
     const spaceArray = { ...select };
-    let newSpaces = spaces;
+    newSpaces = spaces;
     newSpaces.splice(i, 1, spaceArray);
+    console.log(newSpaces);
     if (checkXWins(newSpaces)) {
       console.log(i);
       return i;
-    } else {
-      console.log('no option to lose');
-      return false;
-    }
+    } 
   }
+  console.log('no losing space');
+  return false;
 }
 
 function firstAIMove() {
@@ -226,31 +234,35 @@ const AIFactory = () => {
 
 function checkOWins(spaces) {
   if (
-    ((spaces[0].selection === 'O') & (spaces[1].selection === 'O') & (spaces[2].selection === 'O')) ||
-    ((spaces[3].selection === 'O') & (spaces[4].selection === 'O') & (spaces[5].selection === 'O')) ||
-    ((spaces[6].selection === 'O') & (spaces[7].selection === 'O') & (spaces[8].selection === 'O')) ||
-    ((spaces[0].selection === 'O') & (spaces[3].selection === 'O') & (spaces[6].selection === 'O')) ||
-    ((spaces[1].selection === 'O') & (spaces[4].selection === 'O') & (spaces[7].selection === 'O')) ||
-    ((spaces[2].selection === 'O') & (spaces[5].selection === 'O') & (spaces[8].selection === 'O')) ||
-    ((spaces[0].selection === 'O') & (spaces[4].selection === 'O') & (spaces[8].selection === 'O')) ||
-    ((spaces[6].selection === 'O') & (spaces[4].selection === 'O') & (spaces[2].selection === 'O'))
+    ((spaces[0].selection === 'O') && (spaces[1].selection === 'O') && (spaces[2].selection === 'O')) ||
+    ((spaces[3].selection === 'O') && (spaces[4].selection === 'O') && (spaces[5].selection === 'O')) ||
+    ((spaces[6].selection === 'O') && (spaces[7].selection === 'O') && (spaces[8].selection === 'O')) ||
+    ((spaces[0].selection === 'O') && (spaces[3].selection === 'O') && (spaces[6].selection === 'O')) ||
+    ((spaces[1].selection === 'O') && (spaces[4].selection === 'O') && (spaces[7].selection === 'O')) ||
+    ((spaces[2].selection === 'O') && (spaces[5].selection === 'O') && (spaces[8].selection === 'O')) ||
+    ((spaces[0].selection === 'O') && (spaces[4].selection === 'O') && (spaces[8].selection === 'O')) ||
+    ((spaces[6].selection === 'O') && (spaces[4].selection === 'O') && (spaces[2].selection === 'O'))
   ) {
-    return true;
+      return true;
+    } else {
+      return false;
     };
 };
 
 function checkXWins(spaces) {
   if (
-    ((spaces[0].selection === 'X') & (spaces[1].selection === 'X') & (spaces[2].selection === 'X')) ||
-    ((spaces[3].selection === 'X') & (spaces[4].selection === 'X') & (spaces[5].selection === 'X')) ||
-    ((spaces[6].selection === 'X') & (spaces[7].selection === 'X') & (spaces[8].selection === 'X')) ||
-    ((spaces[0].selection === 'X') & (spaces[3].selection === 'X') & (spaces[6].selection === 'X')) ||
-    ((spaces[1].selection === 'X') & (spaces[4].selection === 'X') & (spaces[7].selection === 'X')) ||
-    ((spaces[2].selection === 'X') & (spaces[5].selection === 'X') & (spaces[8].selection === 'X')) ||
-    ((spaces[0].selection === 'X') & (spaces[4].selection === 'X') & (spaces[8].selection === 'X')) ||
-    ((spaces[6].selection === 'X') & (spaces[4].selection === 'X') & (spaces[2].selection === 'X'))
+    ((spaces[0].selection === 'X') && (spaces[1].selection === 'X') && (spaces[2].selection === 'X')) ||
+    ((spaces[3].selection === 'X') && (spaces[4].selection === 'X') && (spaces[5].selection === 'X')) ||
+    ((spaces[6].selection === 'X') && (spaces[7].selection === 'X') && (spaces[8].selection === 'X')) ||
+    ((spaces[0].selection === 'X') && (spaces[3].selection === 'X') && (spaces[6].selection === 'X')) ||
+    ((spaces[1].selection === 'X') && (spaces[4].selection === 'X') && (spaces[7].selection === 'X')) ||
+    ((spaces[2].selection === 'X') && (spaces[5].selection === 'X') && (spaces[8].selection === 'X')) ||
+    ((spaces[0].selection === 'X') && (spaces[4].selection === 'X') && (spaces[8].selection === 'X')) ||
+    ((spaces[6].selection === 'X') && (spaces[4].selection === 'X') && (spaces[2].selection === 'X'))
   ) {
-    return true;
+      return true;
+    } else {
+      return false;
     };
 };
 
@@ -307,7 +319,7 @@ function resetGame() {
 
   document.getElementById('playerX').value = 'Player X';
   document.getElementById('playerO').value = 'Player O';
-  turn++;
+  turn = 1;
   AI = false;
 }
 
@@ -315,7 +327,7 @@ function addComputer() {
   resetGame();
   document.getElementById('playerO').value = 'Marvin';
   AI = true;
-  return AI;
+  turn = 1;
 }
 
 // creates game board

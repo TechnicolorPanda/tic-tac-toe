@@ -10,8 +10,13 @@ function checkForTie(spaces) {
     const tie = false;
     return tie;
   } else {
-    const tie = true;
-    return tie;
+    if (checkOWins(spaces, playerO)) {
+      oWins(playerO)
+    } else if (checkXWins(spaces, playerX)) {
+      xWins(playerX)
+    } else {
+      return true;
+    };
   }
 }
 
@@ -98,29 +103,17 @@ function placeMarker(targetID, thisCell, player) {
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
-  const spaceArray = { ...select };
-  spaces.splice(targetID, 1, spaceArray);
+  // const spaceArray = { ...select };
+  spaces.splice(targetID, 1, select);
   setTimeout(checkWin(spaces, playerX, playerO), 1000);
   if ((turn%2 === 0) && AI) {
     AIFactory();
   }
 }
 
-function checkValidity(targetID) {
-  for (let i = 0; i < 9; i++) {
-    if (spaces[i].selection === 'I') {
-      if (spaces[targetID].selection === 'I') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
 
-      // TODO: when all spaces are selected, prevent infinite loop
-      return true;
-    }
-  }
-}
+
+// TODO: fix 'maximum call stack size exceeded'
 
 function selectWinningSpace(newSpaces) {
   for (let i = 0; i < 9; i++) {
@@ -181,8 +174,19 @@ function firstAIMove() {
   }
 }
 
+function checkValidity(targetID) {
+  console.log(spaces[targetID].selection);
+  if (spaces[targetID].selection === 'I') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// TODO: if winning space is already selected, then choose next winning space, then choose losing space
+
 const AIFactory = () => {
-  let targetID;
+  let targetID = '';
   const newSpaces = spaces;
   const selectWin = selectWinningSpace(newSpaces);
   const blockLose = selectLosingSpace(newSpaces);
@@ -204,7 +208,9 @@ const AIFactory = () => {
     }
   }
 
-  if (checkValidity(targetID)) {
+  console.log(targetID);
+
+  if (checkValidity(targetID) === true) {
     let thisCell = document.getElementById(targetID);
     player = createUser('Marvin', 'O');
     placeMarker(targetID, thisCell, player);

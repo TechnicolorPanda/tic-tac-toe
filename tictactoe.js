@@ -7,8 +7,7 @@ let AI = false;
 
 function checkForTie(spaces) {
   if (spaces.some((e) => e.selection === 'I')) {
-    const tie = false;
-    return tie;
+    return false;
   } else {
     if (checkOWins(spaces, playerO)) {
       oWins(playerO)
@@ -116,6 +115,7 @@ function placeMarker(targetID, thisCell, player) {
 // TODO: fix 'maximum call stack size exceeded'
 
 function selectWinningSpace(newSpaces) {
+  const winningOptions = [];
   for (let i = 0; i < 9; i++) {
     let tempSpaces = [];
     const select = { selection: 'O' };
@@ -123,13 +123,14 @@ function selectWinningSpace(newSpaces) {
     tempSpaces = ref.slice();
     tempSpaces.splice(i, 1, select);
     if (checkOWins(tempSpaces)) {
-      return i;
+      winningOptions.push(i);
     }
   }
-  return false;
+  return winningOptions;
 }
 
 function selectLosingSpace(newSpaces) {
+  const losingOptions = [];
   for (let i = 0; i < 9; i++) {
     let tempSpaces = [];
     const select = { selection: 'X' };
@@ -137,10 +138,10 @@ function selectLosingSpace(newSpaces) {
     tempSpaces = ref.slice();
     tempSpaces.splice(i, 1, select);
     if (checkXWins(tempSpaces)) {
-      return i;
+      losingOptions.push(i);
     }
   }
-  return false;
+  return losingOptions;
 }
 
 function selectCorner() {
@@ -183,40 +184,67 @@ function checkValidity(targetID) {
   }
 }
 
+function validSelections(options) {
+  for (let i = 0; i < options.length; i++) {
+    let targetID = options[i];
+    if (checkValidity(targetID) === false){
+      options.splice(i, 1);
+    }
+  }
+  return options;
+}
+
+function tryRandomOption() {
+  for (let i = 0; i < 100; i++) {
+    let randomOption = '';
+    randomOption = Math.floor(Math.random() * 9);
+    if (checkValidity(randomOption)) {
+      return randomOption;
+    } 
+  }
+}
+
+function tryBlockLose(blockLose) {
+  let targetID;
+  if (blockLose.length > 0) {
+    let losingOptions = validSelections(blockLose);
+    let option = Math.floor(Math.random() * blockLose.length);
+    targetID = losingOptions[option];
+    if (typeof targetID !== 'number') {
+      targetID = tryRandomOption();
+    }
+  } else {
+    targetID = tryRandomOption();
+  }
+  return targetID;
+}
+
 // TODO: if winning space is already selected, then choose next winning space, then choose losing space
 
 const AIFactory = () => {
   let targetID = '';
   const newSpaces = spaces;
-  const selectWin = selectWinningSpace(newSpaces);
-  const blockLose = selectLosingSpace(newSpaces);
+  let selectWin = selectWinningSpace(newSpaces);
+  let blockLose = selectLosingSpace(newSpaces);
 
   if (turn === 2) {
     let firstMove = firstAIMove();
     targetID = firstMove;
+  } else if (selectWin.length > 0) {
+      let winningOptions = validSelections(selectWin);
+      let option = Math.floor(Math.random() * selectWin.length);
+      targetID = winningOptions[option];
+      if (typeof targetID !== 'number') {
+        targetID = tryBlockLose(blockLose);
+      }
   } else {
-    if (
-      selectWin !== false
-      ) {
-      targetID = selectWin;
-    } else if (
-      blockLose !== false
-    ) {
-      targetID = blockLose;
-    } else {
-      targetID = Math.floor(Math.random() * 9);
-    }
+    targetID = tryBlockLose(blockLose);
   }
-
-  console.log(targetID);
-
-  if (checkValidity(targetID) === true) {
+  
     let thisCell = document.getElementById(targetID);
     player = createUser('Marvin', 'O');
+    console.log(targetID);
     placeMarker(targetID, thisCell, player);
-  } else {
-    AIFactory();
-  }
 };
 
 function checkOWins(spaces) {

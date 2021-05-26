@@ -195,13 +195,16 @@ function validSelections(options) {
 }
 
 function tryRandomOption() {
-  for (let i = 0; i < 100; i++) {
-    let randomOption = '';
-    randomOption = Math.floor(Math.random() * 9);
-    if (checkValidity(randomOption)) {
-      return randomOption;
-    } 
+  let options = [];
+  for (let i = 0; i < 9; i++) {
+    if (spaces[i].selection === 'I') {
+      options.push(i);
+    }
   }
+  console.log(options);
+
+  let randomOption = Math.floor(Math.random() * options.length);
+  return options[randomOption];
 }
 
 function tryBlockLose(blockLose) {

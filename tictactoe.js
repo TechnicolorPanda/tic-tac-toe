@@ -75,11 +75,15 @@ function playerOTurn() {
 }
 
 // places marker on selected square
+// TODO: display error message when duplicate space selected in AI game
 
 function placeMarker(targetID, thisCell, player) {
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = '';
-  let choice;
+  // let choice;
+  console.log(spaces);
+  console.log(targetID);
+  console.log(player);
 
   if (spaces[parseInt(targetID)].selection !== 'I') {
     messageBox.innerHTML = 'Space already taken. Make new selection.';

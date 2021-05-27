@@ -257,10 +257,14 @@ const AIFactory = () => {
     targetID = tryBlockLose(blockLose);
   }
   
+  if (typeof targetID === 'number') {
     let thisCell = document.getElementById(targetID);
     player = createUser('Marvin', 'O');
     console.log(targetID);
     placeMarker(targetID, thisCell, player);
+  } else {
+    checkWin(spaces, playerX, playerO);
+  }
 };
 
 function checkOWins(spaces) {

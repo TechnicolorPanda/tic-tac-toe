@@ -126,7 +126,9 @@ function selectWinningSpace(newSpaces) {
       winningOptions.push(i);
     }
   }
-  return winningOptions;
+  console.log(winningOptions);
+  let validOptions = checkValidity(winningOptions);
+  return validOptions;
 }
 
 function selectLosingSpace(newSpaces) {
@@ -141,7 +143,10 @@ function selectLosingSpace(newSpaces) {
       losingOptions.push(i);
     }
   }
-  return losingOptions;
+  console.log(losingOptions);
+  let validOptions = checkValidity(losingOptions);
+  console.log(validOptions);
+  return validOptions;
 }
 
 function selectCorner() {
@@ -175,44 +180,53 @@ function firstAIMove() {
   }
 }
 
-function checkValidity(targetID) {
-  console.log(spaces[targetID].selection);
-  if (spaces[targetID].selection === 'I') {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function validSelections(options) {
+function checkValidity(options) {
+  console.log('check validity');
+  let validOptions = [];
   for (let i = 0; i < options.length; i++) {
-    let targetID = options[i];
-    if (checkValidity(targetID) === false){
-      options.splice(i, 1);
+    let choice = options[i];
+    console.log(choice);
+    console.log(spaces[choice]);
+    if (spaces[choice].selection === 'I') {
+      validOptions.push(choice);
     }
   }
-  return options;
+  console.log('valid options = ' + validOptions);
+  return validOptions;
 }
 
-function tryRandomOption() {
+// function validSelections(options) {
+//   for (let i = 0; i < options.length; i++) {
+//     let targetID = options[i];
+//     if (checkValidity(targetID) === false){
+//       options.splice(i, 1);
+//     }
+//   }
+//   return options;
+// }
+
+function playOptions() {
   let options = [];
   for (let i = 0; i < 9; i++) {
     if (spaces[i].selection === 'I') {
       options.push(i);
     }
   }
-  console.log(options);
+  return options;
+}
 
+function tryRandomOption() {
+  const options = playOptions();
   let randomOption = Math.floor(Math.random() * options.length);
   return options[randomOption];
 }
 
 function tryBlockLose(blockLose) {
   let targetID;
+  console.log(blockLose);
   if (blockLose.length > 0) {
-    let losingOptions = validSelections(blockLose);
     let option = Math.floor(Math.random() * blockLose.length);
-    targetID = losingOptions[option];
+    targetID = blockLose[option];
     if (typeof targetID !== 'number') {
       targetID = tryRandomOption();
     }
@@ -222,21 +236,20 @@ function tryBlockLose(blockLose) {
   return targetID;
 }
 
-// TODO: if winning space is already selected, then choose next winning space, then choose losing space
-
 const AIFactory = () => {
   let targetID = '';
   const newSpaces = spaces;
   let selectWin = selectWinningSpace(newSpaces);
+  console.log(selectWin);
   let blockLose = selectLosingSpace(newSpaces);
+  console.log(blockLose);
 
   if (turn === 2) {
     let firstMove = firstAIMove();
     targetID = firstMove;
   } else if (selectWin.length > 0) {
-      let winningOptions = validSelections(selectWin);
       let option = Math.floor(Math.random() * selectWin.length);
-      targetID = winningOptions[option];
+      targetID = selectWin[option];
       if (typeof targetID !== 'number') {
         targetID = tryBlockLose(blockLose);
       }

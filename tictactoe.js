@@ -2,24 +2,10 @@
 const spaces = [];
 let turn = 1;
 let AI = false;
-
-// test to check for tie game
-
-function checkForTie(spaces) {
-  if (spaces.some((e) => e.selection === 'I')) {
-    return false;
-  } else {
-    if (checkOWins(spaces, playerO)) {
-      oWins(playerO)
-    } else if (checkXWins(spaces, playerX)) {
-      xWins(playerX)
-    } else {
-      return true;
-    };
-  }
-}
+const createUser = (userName, marker) => ({ userName, marker });
 
 // fill game board with placeholder
+// 'I' acts as placeholder when space has not yet been selected
 
 function fillBoard(board, content) {
   for (let i = 0; i <= 2; i++) {
@@ -45,6 +31,8 @@ function fillBoard(board, content) {
   }
 }
 
+// prevents further moves from being made after game ends
+
 function endGame() {
   for (let i = 0; i < 9; i++) {
     const cell = document.getElementById(i);
@@ -52,12 +40,14 @@ function endGame() {
   }
 }
 
+// selects square when human player makes a selection
+
 function selectSquare(e) {
   const playerX = createUser('Player X', 'X');
   const playerO = createUser('Player O', 'O');
-
   const thisCell = e.target;
   const targetID = e.target.getAttribute('ID');
+
   let player;
   if (turn % 2 === 1) {
     player = playerX;
@@ -83,9 +73,12 @@ function playerOTurn() {
   labelO.style.backgroundColor = 'rgb(172, 68, 61)';
 }
 
+// places marker on selected square
+
 function placeMarker(targetID, thisCell, player) {
   const messageBox = document.getElementById('message_box');
   messageBox.innerHTML = '';
+  let choice;
 
   if (spaces[parseInt(targetID)].selection !== 'I') {
     messageBox.innerHTML = 'Space already taken. Make new selection.';
@@ -102,17 +95,14 @@ function placeMarker(targetID, thisCell, player) {
   thisCell.innerText = choice;
   thisCell.style.color = 'black';
   const select = { selection: choice };
-  // const spaceArray = { ...select };
   spaces.splice(targetID, 1, select);
-  setTimeout(checkWin(spaces, playerX, playerO), 1000);
+  setTimeout(checkWin(spaces), 1000);
   if ((turn%2 === 0) && AI) {
     AIFactory();
   }
 }
 
-
-
-// TODO: fix 'maximum call stack size exceeded'
+// returns array of possible options for computer to win
 
 function selectWinningSpace(newSpaces) {
   const winningOptions = [];
@@ -126,10 +116,11 @@ function selectWinningSpace(newSpaces) {
       winningOptions.push(i);
     }
   }
-  console.log(winningOptions);
   let validOptions = checkValidity(winningOptions);
   return validOptions;
 }
+
+// returns array of possible options that computer must block
 
 function selectLosingSpace(newSpaces) {
   const losingOptions = [];
@@ -143,13 +134,14 @@ function selectLosingSpace(newSpaces) {
       losingOptions.push(i);
     }
   }
-  console.log(losingOptions);
   let validOptions = checkValidity(losingOptions);
-  console.log(validOptions);
   return validOptions;
 }
 
+// allows computer to select a corner play
+
 function selectCorner() {
+  let targetID;
   const cornerSelection = Math.floor(Math.random() * 4);
   switch (cornerSelection) {
     case 0:
@@ -168,6 +160,8 @@ function selectCorner() {
   return targetID;
 }
 
+// computer selects optimal first move
+
 function firstAIMove() {
   if (spaces[4].selection === 'I') {
     return 4;
@@ -180,30 +174,20 @@ function firstAIMove() {
   }
 }
 
+// ensures play selection is valid
+
 function checkValidity(options) {
-  console.log('check validity');
   let validOptions = [];
   for (let i = 0; i < options.length; i++) {
     let choice = options[i];
-    console.log(choice);
-    console.log(spaces[choice]);
     if (spaces[choice].selection === 'I') {
       validOptions.push(choice);
     }
   }
-  console.log('valid options = ' + validOptions);
   return validOptions;
 }
 
-// function validSelections(options) {
-//   for (let i = 0; i < options.length; i++) {
-//     let targetID = options[i];
-//     if (checkValidity(targetID) === false){
-//       options.splice(i, 1);
-//     }
-//   }
-//   return options;
-// }
+// determines which squares are empty
 
 function playOptions() {
   let options = [];
@@ -215,11 +199,15 @@ function playOptions() {
   return options;
 }
 
+// computer plays a random option when move is irrelevant
+
 function tryRandomOption() {
   const options = playOptions();
   let randomOption = Math.floor(Math.random() * options.length);
   return options[randomOption];
 }
+
+// determines which square must be played to prevent opponent from winning
 
 function tryBlockLose(blockLose) {
   let targetID;
@@ -236,23 +224,32 @@ function tryBlockLose(blockLose) {
   return targetID;
 }
 
+// computer selects a square that will enable it to win
+
+function tryPlayWin(selectWin, blockLose) {
+  let targetID;
+  let option = Math.floor(Math.random() * selectWin.length);
+  targetID = selectWin[option];
+  if (typeof targetID !== 'number') {
+    targetID = tryBlockLose(blockLose);
+  } 
+  return targetID;
+}
+
+// selects decision making for AI
+
 const AIFactory = () => {
   let targetID = '';
+  let player;
   const newSpaces = spaces;
   let selectWin = selectWinningSpace(newSpaces);
-  console.log(selectWin);
   let blockLose = selectLosingSpace(newSpaces);
-  console.log(blockLose);
 
   if (turn === 2) {
     let firstMove = firstAIMove();
     targetID = firstMove;
   } else if (selectWin.length > 0) {
-      let option = Math.floor(Math.random() * selectWin.length);
-      targetID = selectWin[option];
-      if (typeof targetID !== 'number') {
-        targetID = tryBlockLose(blockLose);
-      }
+    targetID = tryPlayWin(selectWin, blockLose);
   } else {
     targetID = tryBlockLose(blockLose);
   }
@@ -260,12 +257,13 @@ const AIFactory = () => {
   if (typeof targetID === 'number') {
     let thisCell = document.getElementById(targetID);
     player = createUser('Marvin', 'O');
-    console.log(targetID);
     placeMarker(targetID, thisCell, player);
   } else {
-    checkWin(spaces, playerX, playerO);
+    checkWin(spaces);
   }
 };
+
+// determines of selections will result in a win
 
 function checkOWins(spaces) {
   if (
@@ -281,8 +279,10 @@ function checkOWins(spaces) {
       return true;
     } else {
       return false;
-    };
-};
+    }
+}
+
+// determines if selection will result in a loss
 
 function checkXWins(spaces) {
   if (
@@ -298,16 +298,24 @@ function checkXWins(spaces) {
       return true;
     } else {
       return false;
-    };
-};
-
-function checkWin(spaces, playerX, playerO) {
-  if (checkOWins(spaces, playerO)) {oWins(playerO)};
-  if (checkXWins(spaces, playerX)) {xWins(playerX)};
-  if (checkForTie(spaces)) {catsGame()};
+    }
 }
 
-const createUser = (userName, marker) => ({ userName, marker });
+// test to check for tie game
+
+function checkForTie(spaces) {
+  if (spaces.some((e) => e.selection === 'I')) {
+    return false;
+  } else {
+    if (checkOWins(spaces, playerO)) {
+      oWins(playerO)
+    } else if (checkXWins(spaces, playerX)) {
+      xWins(playerX)
+    } else {
+      return true;
+    }
+  }
+}
 
 // displays message when O wins
 
@@ -337,6 +345,14 @@ function catsGame() {
   endGame();
 }
 
+// checks to see if game has ended with a win, loss, or tie
+
+function checkWin(spaces) {
+  if (checkOWins(spaces, playerO)) {oWins(playerO)}
+  if (checkXWins(spaces, playerX)) {xWins(playerX)}
+  if (checkForTie(spaces)) {catsGame()}
+}
+
 // returns board to initial state upon reset
 
 function resetGame() {
@@ -351,12 +367,11 @@ function resetGame() {
 
   fillBoard(board, content);
   playerXTurn();
-
-  document.getElementById('playerX').value = 'Player X';
-  document.getElementById('playerO').value = 'Player O';
   turn = 1;
   AI = false;
 }
+
+// adds computer to be second player
 
 function addComputer() {
   resetGame();
@@ -367,7 +382,7 @@ function addComputer() {
 
 // creates game board
 
-const gameBoard = (function createBoard() {
+(function createBoard() {
   const board = document.getElementById('container');
   const content = document.createElement('div');
   content.classList.add('box');
@@ -377,7 +392,7 @@ const gameBoard = (function createBoard() {
 
 // creates buttons to reset or add AI player
 
-const displayController = (function computerPlayer() {
+(function computerPlayer() {
   playerXTurn();
   const reset = document.getElementById('reset');
   reset.addEventListener('click', resetGame);
